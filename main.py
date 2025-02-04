@@ -84,7 +84,7 @@ def check_balance():
     target_account = input("Enter the name of the account you would like to check the balance of: ")
     index = user_index(target_account)
 
-    if index is not None:
+    if index is not None: # Prints the current balance
         print(f"\nCurrent balance: {list_accounts[index].balance}")
 
 def display_accounts():
@@ -103,10 +103,34 @@ def display_accounts():
 
 def transfer_funds():
     """Transfer funds between two accounts."""
-    pass
+
+    sender = input("Enter the name of the sender account: ")
+    index_sender = user_index(sender)
+    receiver = input("Enter the name of the receiver account: ")
+    index_receiver = user_index(receiver)
+
+    if index_sender is not None and index_receiver is not None: # Check if the names exist
+        transfer_money = input(f"\nHow much money would you like to transfer to {list_accounts[index_receiver].name}?"
+                              "\nMoney: ")
+
+        if list_accounts[index_sender].balance < transfer_money: # Check if there is enough money in the sender balance
+            print(f"Insufficient funds in {list_accounts[index_sender].name}'s account.")
+        else:
+            # Get the money from the sender and add the transaction
+            list_accounts[index_sender].balance -= transfer_money
+            list_accounts[index_sender].transaction_history.append(f"-{transfer_money}")
+
+            # Receive the money and add the transaction
+            list_accounts[index_receiver].receiver += transfer_money
+            list_accounts[index_receiver].transaction_history.append(f"+{transfer_money}")
+
+            print("The transaction has been successful! ✅")
 
 def view_transaction_history():
     """View transactions for an account."""
+
+
+
     pass
 
 def apply_for_loan():
