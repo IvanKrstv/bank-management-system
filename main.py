@@ -1,16 +1,34 @@
 # Enhanced Bank Account Management System
-
-# 🏦 Data Structures to Store Information
-account_holders = []  # Account names
-balances = []         # Account balances
-transaction_histories = []  # Account transaction logs
-loans = []            # Account loan details
+from define_class import BankAccount
+list_accounts = []
 
 MAX_LOAN_AMOUNT = 10000
 INTEREST_RATE = 0.03
 
+def user_index(account):
+    """
+    Function for verification that checks if the target user exists
+    :parameter: target account
+    :return: index or None
+    """
+
+    found = False  # Flag for keeping track if the name exists in the list
+    index = 0  # Will store at which index the person is found
+
+    # Goes through the list of accounts to check if the target name is there
+    for i in range(len(list_accounts)):
+        if list_accounts[i].account_holder == account.strip():
+            index = i
+            found = True
+            return index
+
+    if not found:
+        print(f"\nNo account with the name {account} has been found! ❌")
+        return None
+
 def display_menu():
     """Main menu for banking system."""
+
     print("\n🌟 Welcome to Enhanced Bank System 🌟")
     print("1️⃣ Create Account")
     print("2️⃣ Deposit Money")
@@ -26,43 +44,82 @@ def display_menu():
 
 def create_account():
     """Create a new account."""
-    pass  # TODO: Add logic
+
+    account_name = input("Enter your name: ")
+    list_accounts.append(BankAccount(account_name, 0, 0)) # Appends the new account to the accounts list
+    print("Account has been successfully created! ✅")
 
 def deposit():
     """Deposit money into an account."""
-    pass  # TODO: Add logic
+
+    target_account = input("Enter the name of the account you would like to deposit money to: ")
+    index = user_index(target_account) # Index of the target account
+
+    if index is not None: # Allows the user to deposit money to the account
+        deposit_money = input("\nHow much money would you like to deposit?"
+                              "\nMoney: ")
+        list_accounts[index].balance += deposit_money
+        list_accounts[index].transaction_history.append(f"+{deposit_money}")
+        print(f"{deposit_money} dollars have been successfully deposited to your account! ✅")
 
 def withdraw():
     """Withdraw money from an account."""
-    pass  # TODO: Add logic
+
+    target_account = input("Enter the name of the account you would like to withdraw money from: ")
+    index = user_index(target_account) # Index of the target account
+
+    if index is not None: # Allows the user to withdraw money from the account
+        withdraw_money = input("\nHow much money would you like to withdraw?"
+                              "\nMoney: ")
+        if withdraw_money <= list_accounts[index].balance: # Checks if the sufficient balance exists for the withdrawal
+            list_accounts[index].balance -= withdraw_money
+            list_accounts[index].transaction_history.append(f"-{withdraw_money}")
+            print(f"{withdraw_money} dollars have been successfully withdrawn from your account! ✅")
+        else:
+            print("You don't have enough funds to withdraw this amount!")
 
 def check_balance():
     """Check balance of an account."""
-    pass  # TODO: Add logic
 
-def list_accounts():
+    target_account = input("Enter the name of the account you would like to check the balance of: ")
+    index = user_index(target_account)
+
+    if index is not None:
+        print(f"\nCurrent balance: {list_accounts[index].balance}")
+
+def display_accounts():
     """List all account holders and details."""
-    pass  # TODO: Add logic
+
+    if not list_accounts: # Check if there are created accounts
+        print("No accounts to display!")
+        return
+
+    # Display the information for each account
+    for i in range(len(list_accounts)):
+        print(f"\nAccount number {i + 1}:"
+              f"\nName: {list_accounts[i].account_holder}"
+              f"\nBalance: {list_accounts[i].balance}"
+              f"\nLoan details: {list_accounts[i].loan}")
 
 def transfer_funds():
     """Transfer funds between two accounts."""
-    pass  # TODO: Add logic
+    pass
 
 def view_transaction_history():
     """View transactions for an account."""
-    pass  # TODO: Add logic
+    pass
 
 def apply_for_loan():
     """Allow user to apply for a loan."""
-    pass  # TODO: Add logic
+    pass
 
 def repay_loan():
     """Allow user to repay a loan."""
-    pass  # TODO: Add logic
+    pass
 
 def identify_card_type():
     """Identify type of credit card."""
-    pass  # TODO: Add logic
+    pass
 
 def main():
     """Run the banking system."""
@@ -79,7 +136,7 @@ def main():
         elif choice == 4:
             check_balance()
         elif choice == 5:
-            list_accounts()
+            display_accounts()
         elif choice == 6:
             transfer_funds()
         elif choice == 7:
