@@ -153,31 +153,34 @@ def identify_card_type():
 
 def main():
     """Run the banking system."""
+
     while True:
         display_menu()
-        choice = int(input("Enter your choice: "))
+
+        choice = input("Enter your choice: ")
+
         # Map choices to functions
-        if choice == 1:
+        if choice == '1':
             create_account()
-        elif choice == 2:
+        elif choice == '2':
             deposit()
-        elif choice == 3:
+        elif choice == '3':
             withdraw()
-        elif choice == 4:
+        elif choice == '4':
             check_balance()
-        elif choice == 5:
+        elif choice == '5':
             display_accounts()
-        elif choice == 6:
+        elif choice == '6':
             transfer_funds()
-        elif choice == 7:
+        elif choice == '7':
             view_transaction_history()
-        elif choice == 8:
+        elif choice == '8':
             apply_for_loan()
-        elif choice == 9:
+        elif choice == '9':
             repay_loan()
-        elif choice == 10:
+        elif choice == '10':
             identify_card_type()
-        elif choice == 0:
+        elif choice == '0':
             print("Goodbye! 👋")
             break
         else:
