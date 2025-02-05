@@ -129,9 +129,15 @@ def transfer_funds():
 def view_transaction_history():
     """View transactions for an account."""
 
+    target_account = input("Enter the name of the account whose transaction history you would like to view: ")
+    index = user_index(target_account)
 
-
-    pass
+    if index is not None:
+        counter = 1
+        print()
+        for transaction in list_accounts[index].transaction_history:
+            print(f"{counter}. {transaction} dollars")
+            counter += 1
 
 def apply_for_loan():
     """Allow user to apply for a loan."""
