@@ -1,36 +1,36 @@
 # Enhanced Bank Account Management System
 from define_class import BankAccount
-list_accounts = []
+from os import system
+list_accounts = [] # Initialize list for all the accounts
 
 MAX_LOAN_AMOUNT = 10000
 INTEREST_RATE = 0.03
 
-def user_index(account):
+def user_index(account) -> int or None:
     """
     Function for verification that checks if the target user exists
     :parameter: target account
     :return: index or None
     """
 
-    found = False  # Flag for keeping track if the name exists in the list
-    index = 0  # Will store at which index the person is found
-
     # Goes through the list of accounts to check if the target name is there
-    for i in range(len(list_accounts)):
-        if list_accounts[i].account_holder == account.strip():
-            index = i
-            found = True
+    for index, acc in enumerate(list_accounts):
+        if acc.account_holder == account.strip():
             return index
 
-    if not found:
-        print(f"\nNo account with the name {account} has been found! ❌")
-        return None
+    print(f"\nNo account with the name {account} has been found! ❌")
+    return None
 
-def display_menu():
+def clear_screen():
+    print()
+    system("pause")
+    system("cls")
+
+def display_menu() -> None:
     """Main menu for banking system."""
 
-    print("\n🌟 Welcome to Enhanced Bank System 🌟")
-    print("1️⃣ Create Account")
+    print("🌟 Welcome to Enhanced Bank System 🌟")
+    print("\n1️⃣ Create Account")
     print("2️⃣ Deposit Money")
     print("3️⃣ Withdraw Money")
     print("4️⃣ Check Balance")
@@ -42,57 +42,15 @@ def display_menu():
     print("🔟 Identify Credit Card Type")
     print("0️⃣ Exit")
 
-def create_account():
+def create_account() -> None:
     """Create a new account."""
 
     account_name = input("Enter your name: ")
-    list_accounts.append(BankAccount(account_name, 0, 0)) # Appends the new account to the accounts list
+    list_accounts.append(BankAccount(account_name)) # Appends the new account to the accounts list
     print("Account has been successfully created! ✅")
 
-def deposit():
-    """Deposit money into an account."""
-
-    target_account = input("Enter the name of the account you would like to deposit money to: ")
-    index = user_index(target_account) # Index of the target account
-
-    if index is not None: # Allows the user to deposit money to the account
-        deposit_money = input("\nHow much money would you like to deposit?"
-                              "\nMoney: ")
-        list_accounts[index].balance += deposit_money
-        list_accounts[index].transaction_history.append(f"Deposited: {deposit_money}")
-        print(f"{deposit_money} dollars have been successfully deposited to your account! ✅")
-
-def withdraw():
-    """Withdraw money from an account."""
-
-    target_account = input("Enter the name of the account you would like to withdraw money from: ")
-    index = user_index(target_account) # Index of the target account
-
-    if index is not None: # Allows the user to withdraw money from the account
-        withdraw_money = input("\nHow much money would you like to withdraw?"
-                              "\nMoney: ")
-        if withdraw_money <= list_accounts[index].balance: # Checks if the sufficient balance exists for the withdrawal
-            list_accounts[index].balance -= withdraw_money
-            list_accounts[index].transaction_history.append(f"Withdrew: {withdraw_money}")
-            print(f"{withdraw_money} dollars have been successfully withdrawn from your account! ✅")
-        else:
-            print("You don't have enough funds to withdraw this amount!")
-
-def check_balance():
-    """Check balance of an account."""
-
-    target_account = input("Enter the name of the account you would like to check the balance of: ")
-    index = user_index(target_account)
-
-    if index is not None: # Prints the current balance
-        print(f"\nCurrent balance: {list_accounts[index].balance}")
-
-def display_accounts():
+def display_accounts() -> None:
     """List all account holders and details."""
-
-    if not list_accounts: # Check if there are created accounts
-        print("No accounts to display!")
-        return
 
     # Display the information for each account
     for i in range(len(list_accounts)):
@@ -101,87 +59,26 @@ def display_accounts():
               f"\nBalance: {list_accounts[i].balance}"
               f"\nLoan details: {list_accounts[i].loan}")
 
-def transfer_funds():
+def transfer_funds(sender: str, receiver: str, index_sender: int, index_receiver: int) -> None:
     """Transfer funds between two accounts."""
 
-    sender = input("Enter the name of the sender account: ")
-    index_sender = user_index(sender)
-    receiver = input("Enter the name of the receiver account: ")
-    index_receiver = user_index(receiver)
+    transfer_money = float(input(f"\nHow much money would you like to transfer to {list_accounts[index_receiver].name}?"
+                          "\nMoney: "))
 
-    if index_sender is not None and index_receiver is not None: # Check if the names exist
-        transfer_money = input(f"\nHow much money would you like to transfer to {list_accounts[index_receiver].name}?"
-                              "\nMoney: ")
+    if list_accounts[index_sender].balance < transfer_money: # Check if there is enough money in the sender balance
+        print(f"Insufficient funds in {list_accounts[index_sender].name}'s account.")
+    else:
+        # Get the money from the sender and add the transaction
+        list_accounts[index_sender].balance -= transfer_money
+        list_accounts[index_sender].transaction_history.append(f"Sent {transfer_money} dollars to {receiver}.")
 
-        if list_accounts[index_sender].balance < transfer_money: # Check if there is enough money in the sender balance
-            print(f"Insufficient funds in {list_accounts[index_sender].name}'s account.")
-        else:
-            # Get the money from the sender and add the transaction
-            list_accounts[index_sender].balance -= transfer_money
-            list_accounts[index_sender].transaction_history.append(f"-{transfer_money}")
+        # Receive the money and add the transaction
+        list_accounts[index_receiver].receiver += transfer_money
+        list_accounts[index_receiver].transaction_history.append(f"Received {transfer_money} dollars from {sender}.")
 
-            # Receive the money and add the transaction
-            list_accounts[index_receiver].receiver += transfer_money
-            list_accounts[index_receiver].transaction_history.append(f"+{transfer_money}")
+        print("The transaction has been successful! ✅")
 
-            print("The transaction has been successful! ✅")
-
-def view_transaction_history():
-    """View transactions for an account."""
-
-    target_account = input("Enter the name of the account whose transaction history you would like to view: ")
-    index = user_index(target_account)
-
-    if index is not None:
-        counter = 1
-        print()
-        for transaction in list_accounts[index].transaction_history:
-            print(f"{counter}. {transaction} dollars")
-            counter += 1
-
-def apply_for_loan():
-    """Allow user to apply for a loan."""
-
-    target_account = input("Enter the name of the account you would like to apply for loan from: ")
-    index = user_index(target_account)
-
-    if index is not None:
-        requested_amount = float(input("Enter the requested amount of the loan: "))
-        if requested_amount > MAX_LOAN_AMOUNT: # Check if the requested amount is more than the maximum
-            print("Sorry, this amount is more than what the bank could offer."
-                  f"You may only apply for up to {MAX_LOAN_AMOUNT} dollars.")
-        else:
-            print(f"Your loan of {requested_amount} has been accepted and added successfully to your account. ✅")
-
-            # Adding loan to the account
-            total_loan = requested_amount * (1 + INTEREST_RATE) # Calculating the interest rate
-            list_accounts[index].balance += requested_amount # Adding the money to the balance
-            list_accounts[index].loan += total_loan # Adding the money + the interest rate to the loan
-            list_accounts[index].transaction_history.append(f"Loan applied:{requested_amount} dollars"
-                                                            f"with interest {requested_amount * INTEREST_RATE}") # Adding the loan transaction
-
-def repay_loan():
-    """Allow user to repay a loan."""
-
-    target_account = input("Enter the name of the account you would like to apply for loan from: ")
-    index = user_index(target_account)
-
-    if index is not None:
-        print(f"How much would you like to repay? (Current loans due: {list_accounts[index].loan})")
-        repaid_loan = float(input("Repay: "))
-        if list_accounts[index].balance < repaid_loan:
-            print("Insufficient amount of money in your balance! The transaction haas been canceled!")
-        else:
-            print(f"{repaid_loan} dollars have been successfully repaid. Thank you!")
-            # Removing the repaid loan from the account
-            list_accounts[index].balance -= repaid_loan  # Reducing the money from the balance
-            list_accounts[index].loan -= repaid_loan  # Also from the loan
-            if list_accounts[index].loan <= 0:
-                print("You have paid all your loans! ✅")
-                list_accounts[index].loan = 0
-            list_accounts[index].transaction_history.append(f"Loan repaid:{repaid_loan}")
-
-def identify_card_type():
+def identify_card_type() -> str or -1:
     """Identify type of credit card."""
 
     user_card = input("Enter your card number: ")
@@ -189,7 +86,6 @@ def identify_card_type():
         return -1
 
     # Find the type of the card, based on the prefixes
-    card_type = None
     if user_card[0] == '4':
         card_type = "Visa"
     elif 51 <= int(user_card[:2]) <= 55:
@@ -212,32 +108,111 @@ def main():
         # Map choices to functions
         if choice == '1':
             create_account()
+
         elif choice == '2':
-            deposit()
+            if list_accounts:
+                target_account = input("Enter the name of the account you would like to deposit money to: ")
+                index = user_index(target_account)  # Index of the target account
+
+                if index is not None: # Allows the user to deposit money to the account
+                    account = list_accounts[index]
+                    account.deposit()
+
+            else:
+                print("There are no created accounts!")
+
         elif choice == '3':
-            withdraw()
+            if list_accounts:
+                target_account = input("Enter the name of the account you would like to withdraw money from: ")
+                index = user_index(target_account)  # Index of the target account
+
+                if index is not None:  # Allows the user to withdraw money from the account
+                    account = list_accounts[index]
+                    account.withdraw(list_accounts)
+
+            else:
+                print("There are no created accounts!")
+
         elif choice == '4':
-            check_balance()
+            if list_accounts:
+                target_account = input("Enter the name of the account you would like to check the balance of: ")
+                index = user_index(target_account)
+
+                if index is not None:  # Prints the current balance
+                    account = list_accounts[index]
+                    account.check_balance(list_accounts)
+
+            else:
+                print("There are no created accounts!")
+
         elif choice == '5':
-            display_accounts()
+            if list_accounts:
+                display_accounts()
+            else:
+                print("There are no created accounts!")
+
         elif choice == '6':
-            transfer_funds()
+            if list_accounts:
+                send = input("Enter the name of the sender account: ")
+                index_send = user_index(send)
+                receive = input("Enter the name of the receiver account: ")
+                index_receive = user_index(receive)
+
+                if index_send is not None and index_receive is not None:  # Check if the names exist
+                    transfer_funds(send, receive, index_send, index_receive)
+            else:
+                print("There are no created accounts!")
+
         elif choice == '7':
-            view_transaction_history()
+            if list_accounts:
+                target_account = input("Enter the name of the account whose transaction history you would like to view: ")
+                index = user_index(target_account)
+
+                if index is not None:
+                    account = list_accounts[index]
+                    account.transaction_history()
+
+            else:
+                print("There are no created accounts!")
+
         elif choice == '8':
-            apply_for_loan()
+            if list_accounts:
+                target_account = input("Enter the name of the account you would like to apply for loan from: ")
+                index = user_index(target_account)
+
+                if index is not None:
+                    account = list_accounts[index]
+                    account.apply_for_loan(MAX_LOAN_AMOUNT, INTEREST_RATE)
+
+            else:
+                print("There are no created accounts!")
+
         elif choice == '9':
-            repay_loan()
+            if list_accounts:
+                target_account = input("Enter the name of the account you would like to apply for loan from: ")
+                index = user_index(target_account)
+
+                if index is not None:
+                    account = list_accounts[index]
+                    account.repay_loan()
+
+            else:
+                print("There are no created accounts!")
+
         elif choice == '10':
             if identify_card_type() == -1:
                 print("Invalid card number!")
             else:
                 print(f"Your card is: {identify_card_type()}")
+
         elif choice == '0':
             print("Goodbye! 👋")
             break
+
         else:
             print("❌ Invalid choice. Try again!")
+
+        clear_screen()
 
 if __name__ == "__main__":
     main()
