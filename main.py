@@ -149,7 +149,23 @@ def repay_loan():
 
 def identify_card_type():
     """Identify type of credit card."""
-    pass
+
+    user_card = input("Enter your card number: ")
+    if len(user_card) < 15 or len(user_card) > 16: # Check if the length of the card is real
+        return -1
+
+    # Find the type of the card, based on the prefixes
+    card_type = None
+    if user_card[0] == '4':
+        card_type = "Visa"
+    elif 51 <= int(user_card[:2]) <= 55:
+        card_type = "MasterCard"
+    elif 34 <= int(user_card[:2]) <= 37:
+        card_type = "American Express"
+    else:
+        card_type = "Other"
+
+    return card_type
 
 def main():
     """Run the banking system."""
@@ -179,7 +195,10 @@ def main():
         elif choice == '9':
             repay_loan()
         elif choice == '10':
-            identify_card_type()
+            if identify_card_type() == -1:
+                print("Invalid card number!")
+            else:
+                print(f"Your card is: {identify_card_type()}")
         elif choice == '0':
             print("Goodbye! 👋")
             break
