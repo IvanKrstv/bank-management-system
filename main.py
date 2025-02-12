@@ -59,7 +59,7 @@ def deposit():
         deposit_money = input("\nHow much money would you like to deposit?"
                               "\nMoney: ")
         list_accounts[index].balance += deposit_money
-        list_accounts[index].transaction_history.append(f"+{deposit_money}")
+        list_accounts[index].transaction_history.append(f"Deposited: {deposit_money}")
         print(f"{deposit_money} dollars have been successfully deposited to your account! ✅")
 
 def withdraw():
@@ -73,7 +73,7 @@ def withdraw():
                               "\nMoney: ")
         if withdraw_money <= list_accounts[index].balance: # Checks if the sufficient balance exists for the withdrawal
             list_accounts[index].balance -= withdraw_money
-            list_accounts[index].transaction_history.append(f"-{withdraw_money}")
+            list_accounts[index].transaction_history.append(f"Withdrew: {withdraw_money}")
             print(f"{withdraw_money} dollars have been successfully withdrawn from your account! ✅")
         else:
             print("You don't have enough funds to withdraw this amount!")
@@ -141,11 +141,45 @@ def view_transaction_history():
 
 def apply_for_loan():
     """Allow user to apply for a loan."""
-    pass
+
+    target_account = input("Enter the name of the account you would like to apply for loan from: ")
+    index = user_index(target_account)
+
+    if index is not None:
+        requested_amount = float(input("Enter the requested amount of the loan: "))
+        if requested_amount > MAX_LOAN_AMOUNT: # Check if the requested amount is more than the maximum
+            print("Sorry, this amount is more than what the bank could offer."
+                  f"You may only apply for up to {MAX_LOAN_AMOUNT} dollars.")
+        else:
+            print(f"Your loan of {requested_amount} has been accepted and added successfully to your account. ✅")
+
+            # Adding loan to the account
+            total_loan = requested_amount * (1 + INTEREST_RATE) # Calculating the interest rate
+            list_accounts[index].balance += requested_amount # Adding the money to the balance
+            list_accounts[index].loan += total_loan # Adding the money + the interest rate to the loan
+            list_accounts[index].transaction_history.append(f"Loan applied:{requested_amount} dollars"
+                                                            f"with interest {requested_amount * INTEREST_RATE}") # Adding the loan transaction
 
 def repay_loan():
     """Allow user to repay a loan."""
-    pass
+
+    target_account = input("Enter the name of the account you would like to apply for loan from: ")
+    index = user_index(target_account)
+
+    if index is not None:
+        print(f"How much would you like to repay? (Current loans due: {list_accounts[index].loan})")
+        repaid_loan = float(input("Repay: "))
+        if list_accounts[index].balance < repaid_loan:
+            print("Insufficient amount of money in your balance! The transaction haas been canceled!")
+        else:
+            print(f"{repaid_loan} dollars have been successfully repaid. Thank you!")
+            # Removing the repaid loan from the account
+            list_accounts[index].balance -= repaid_loan  # Reducing the money from the balance
+            list_accounts[index].loan -= repaid_loan  # Also from the loan
+            if list_accounts[index].loan <= 0:
+                print("You have paid all your loans! ✅")
+                list_accounts[index].loan = 0
+            list_accounts[index].transaction_history.append(f"Loan repaid:{repaid_loan}")
 
 def identify_card_type():
     """Identify type of credit card."""
