@@ -212,7 +212,7 @@ def main():
         else:
             print("❌ Invalid choice. Try again!")
 
-        clear_screen()
+        clear_screen() # Clearing the screen for every iteration
 
 if __name__ == "__main__":
     main()
