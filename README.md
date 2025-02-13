@@ -1,6 +1,6 @@
 # 🏦 Bank Account Management System 🏦
 
-![1000_F_61062796_NF87GPnWV0fQ2LhoYNlyjev0PocRwZj9.jpg](../../../AppData/Local/Temp/1000_F_61062796_NF87GPnWV0fQ2LhoYNlyjev0PocRwZj9.jpg)
+![bank.jpg](https://as2.ftcdn.net/v2/jpg/00/61/06/27/1000_F_61062796_NF87GPnWV0fQ2LhoYNlyjev0PocRwZj9.jpg)
  
 This is a small simple console system for bank account management, written in Python.
 The idea for the project was given by the lecturer in SoftUni, [Mario Zahariev](https://github.com/zahariev-webbersof).
