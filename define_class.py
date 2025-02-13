@@ -37,8 +37,11 @@ class BankAccount:
         """View transactions for an account."""
 
         print()
-        for index, transaction in enumerate(self.transaction_history):
-            print(f"{index + 1}. {transaction}")
+        if self.transaction_history:
+            for index, transaction in enumerate(self.transaction_history):
+                print(f"{index + 1}. {transaction}")
+        else:
+            print("There are not any transactions to be shown for this account!")
 
     def apply_for_loan(self, max_loan: int, interest_rate: float):
         """Allow user to apply for a loan."""
